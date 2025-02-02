@@ -65,12 +65,32 @@ mac:
 linux:
   artifactName: ${productName}-${version}-${arch}.${ext}
   target:
-    - target: AppImage
+    - target: rpm
       arch:
-        - arm64
         - x64
   maintainer: electronjs.org
   category: Utility
+  # 部署多尺寸图标到 Linux 标准路径
+  extraResources:
+    - from: "build/icons/512x512.png"
+      to: "/usr/share/icons/hicolor/512x512/apps/cherry-studio.png"  # 👉 注意文件名
+    - from: "build/icons/256x256.png"
+      to: "/usr/share/icons/hicolor/256x256/apps/cherry-studio.png"
+    - from: "build/icons/128x128.png"
+      to: "/usr/share/icons/hicolor/128x128/apps/cherry-studio.png"
+    - from: "build/icons/48x48.png"
+      to: "/usr/share/icons/hicolor/48x48/apps/cherry-studio.png"  # ✅ 关键分辨率
+  desktop:
+    Icon: "cherrystudio"  # 此处名称必须与图标文件名一致（不带扩展名）
+#rpm:
+#  afterInstall: ./scripts/after-install.sh  # 图标缓存更新
+#  afterRemove: ./scripts/after-remove.sh
+#  depends:
+#    - gtk3
+#    - libnotify
+#    - nss
+#    - libX11-xcb
+#    - libXScrnSaver
 publish:
   provider: generic
   url: https://cherrystudio.ocool.online
