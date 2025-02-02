@@ -82,6 +82,9 @@ linux:
       to: "/usr/share/icons/hicolor/48x48/apps/cherry-studio.png"  # ✅ 关键分辨率
   desktop:
     Icon: "cherrystudio"  # 此处名称必须与图标文件名一致（不带扩展名）
+  executableArgs:
+    - "--enable-features=UseOzonePlatform,WaylandWindowDecorations"
+    - "--enable-high-dpi-support"
 #rpm:
 #  afterInstall: ./scripts/after-install.sh  # 图标缓存更新
 #  afterRemove: ./scripts/after-remove.sh
