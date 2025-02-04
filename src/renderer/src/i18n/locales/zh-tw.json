@@ -272,7 +272,8 @@
       "copy.success": "複製成功",
       "error.get_embedding_dimensions": "獲取嵌入維度失敗",
       "group.delete.title": "刪除分組消息",
-      "group.delete.content": "刪除分組消息會刪除用戶提問和所有助手的回答"
+      "group.delete.content": "刪除分組消息會刪除用戶提問和所有助手的回答",
+      "mention.title": "切換模型回答"
     },
     "minapp": {
       "title": "小程序",
@@ -487,7 +488,7 @@
         "delete.title": "刪除提供者",
         "docs_check": "檢查",
         "docs_more_details": "查看更多細節",
-        "get_api_key": "獲取 API 密鑰",
+        "get_api_key": "獲取密鑰",
         "no_models": "請先添加模型再檢查 API 連接",
         "not_checked": "未檢查",
         "remove_duplicate_keys": "移除重複密鑰",
@@ -614,7 +615,8 @@
       "source": "來源",
       "chunk_size": "分段大小",
       "chunk_overlap": "重疊大小",
-      "not_set": "未設置"
+      "not_set": "未設置",
+      "settings": "知識庫設定"
     },
     "models": {
       "pinned": "已固定",
@@ -671,6 +673,12 @@
         "esc_back": "返回",
         "copy_last_message": "按 C 鍵複製"
       }
+    },
+    "auth": {
+      "oauth_button": "使用{{provider}}登入",
+      "get_key": "獲取",
+      "get_key_success": "自動獲取密鑰成功",
+      "login": "登入"
     }
   }
 }

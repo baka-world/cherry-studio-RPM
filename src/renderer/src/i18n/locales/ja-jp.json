@@ -271,7 +271,8 @@
       "copy.success": "コピーしました！",
       "error.get_embedding_dimensions": "埋込み次元を取得できませんでした",
       "group.delete.title": "分組メッセージを削除",
-      "group.delete.content": "分組メッセージを削除するとユーザーの質問と助け手の回答がすべて削除されます"
+      "group.delete.content": "分組メッセージを削除するとユーザーの質問と助け手の回答がすべて削除されます",
+      "mention.title": "モデルを切り替える"
     },
     "minapp": {
       "title": "ミニアプリ",
@@ -613,7 +614,8 @@
       "source": "ソース",
       "chunk_size": "チャンクサイズ",
       "chunk_overlap": "チャンクの重なり",
-      "not_set": "未設定"
+      "not_set": "未設定",
+      "settings": "ナレッジベース設定"
     },
     "models": {
       "pinned": "固定済み",
@@ -670,6 +672,12 @@
         "esc_back": "戻る",
         "copy_last_message": "C キーを押してコピー"
       }
+    },
+    "auth": {
+      "oauth_button": "{{provider}}で認証",
+      "get_key": "取得",
+      "get_key_success": "APIキーの自動取得に成功しました",
+      "login": "認証"
     }
   }
 }

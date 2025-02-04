@@ -273,7 +273,8 @@
       "copy.success": "复制成功",
       "error.get_embedding_dimensions": "获取嵌入维度失败",
       "group.delete.title": "删除分组消息",
-      "group.delete.content": "删除分组消息会删除用户提问和所有助手的回答"
+      "group.delete.content": "删除分组消息会删除用户提问和所有助手的回答",
+      "mention.title": "切换模型回答"
     },
     "minapp": {
       "title": "小程序",
@@ -488,7 +489,7 @@
         "delete.title": "删除提供商",
         "docs_check": "查看",
         "docs_more_details": "获取更多详情",
-        "get_api_key": "点击这里获取密钥",
+        "get_api_key": "获取密钥",
         "no_models": "请先添加模型再检查 API 连接",
         "not_checked": "未检查",
         "remove_duplicate_keys": "移除重复密钥",
@@ -615,7 +616,8 @@
       "source": "来源",
       "chunk_size": "分段大小",
       "chunk_overlap": "重叠大小",
-      "not_set": "未设置"
+      "not_set": "未设置",
+      "settings": "知识库设置"
     },
     "models": {
       "pinned": "已固定",
@@ -629,7 +631,7 @@
       },
       "all": "全部",
       "vision": "视觉模型",
-      "websearch": "网络搜索模型",
+      "websearch": "联网模型",
       "free": "免费模型",
       "embedding": "嵌入模型",
       "embedding_model": "嵌入模型",
@@ -672,6 +674,12 @@
         "esc_back": "返回",
         "copy_last_message": "按 C 键复制"
       }
+    },
+    "auth": {
+      "oauth_button": "使用{{provider}}登录",
+      "get_key": "获取",
+      "get_key_success": "自动获取密钥成功",
+      "login": "登录"
     }
   }
 }
