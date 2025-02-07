@@ -35,7 +35,7 @@ Thumbs.db
 node_modules
 dist
 out
-build/icons
+#build/icons
 stats.html
 
 # ENV
