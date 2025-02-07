@@ -898,6 +898,29 @@ const migrateConfig = {
     })
     state.settings.translateModelPrompt = TRANSLATE_PROMPT
     return state
+  },
+  '63': (state: RootState) => {
+    if (state.minapps) {
+      const mintop = DEFAULT_MIN_APPS.find((app) => app.id === '3mintop')
+      if (mintop) {
+        state.minapps.enabled.push(mintop)
+      }
+    }
+    return state
+  },
+  '64': (state: RootState) => {
+    state.llm.providers = state.llm.providers.filter((provider) => provider.id !== 'qwenlm')
+    state.llm.providers.push({
+      id: 'baidu-cloud',
+      name: 'Baidu Cloud',
+      type: 'openai',
+      apiKey: '',
+      apiHost: 'https://qianfan.baidubce.com/v2/',
+      models: SYSTEM_MODELS['baidu-cloud'],
+      isSystem: true,
+      enabled: false
+    })
+    return state
   }
 }
 

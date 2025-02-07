@@ -6,6 +6,8 @@
       "add.name.placeholder": "名前を入力",
       "add.prompt": "プロンプト",
       "add.prompt.placeholder": "プロンプトを入力",
+      "add.knowledge_base": "ナレッジベース",
+      "add.knowledge_base.placeholder": "ナレッジベースを選択",
       "add.title": "エージェントを作成",
       "delete.popup.content": "このエージェントを削除してもよろしいですか？",
       "edit.message.add.title": "追加",
@@ -46,6 +48,7 @@
       "settings.model": "モデル設定",
       "settings.preset_messages": "プリセットメッセージ",
       "settings.prompt": "プロンプト設定",
+      "settings.knowledge_base": "ナレッジベース設定",
       "title": "アシスタント"
     },
     "button": {
@@ -129,6 +132,7 @@
       "copy": "コピー",
       "cut": "切り取り",
       "default": "デフォルト",
+      "knowledge_base": "ナレッジベース",
       "delete": "削除",
       "description": "説明",
       "docs": "ドキュメント",
@@ -247,6 +251,9 @@
       "error.chunk_overlap_too_large": "チャンクの重なりは、チャンクサイズを超えることはできません",
       "error.invalid.proxy.url": "無効なプロキシURL",
       "error.invalid.webdav": "無効なWebDAV設定",
+      "error.invalid.enter.api.host": "APIホストを入力してください",
+      "error.invalid.enter.api.key": "APIキーを入力してください",
+      "error.invalid.enter.model": "モデルを選択してください",
       "message.code_style": "コードスタイル",
       "message.delete.content": "このメッセージを削除してもよろしいですか？",
       "message.delete.title": "メッセージを削除",
@@ -310,6 +317,7 @@
       "aihubmix": "AiHubMix",
       "anthropic": "Anthropic",
       "azure-openai": "Azure OpenAI",
+      "baidu-cloud": "Baidu Cloud",
       "baichuan": "百川",
       "dashscope": "Alibaba Cloud",
       "deepseek": "DeepSeek",
@@ -488,6 +496,7 @@
         "docs_check": "チェック",
         "docs_more_details": "詳細を確認",
         "get_api_key": "APIキーを取得",
+        "charge": "充電",
         "no_models": "API接続をチェックする前に、モデルを追加してください",
         "not_checked": "未チェック",
         "remove_duplicate_keys": "重複キーを削除",
@@ -625,14 +634,16 @@
         "select": "モデルタイプを選択",
         "text": "テキスト",
         "vision": "画像",
-        "embedding": "埋め込み"
+        "embedding": "埋め込み",
+        "reasoning": "推論"
       },
       "all": "すべて",
-      "vision": "画像モデル",
-      "websearch": "ウェブ検索モデル",
-      "free": "無料モデル",
-      "embedding": "埋め込みモデル",
-      "embedding_model": "埋め込みモデル",
+      "vision": "画像",
+      "websearch": "ウェブ検索",
+      "free": "無料",
+      "reasoning": "推論",
+      "embedding": "埋め込み",
+      "embedding_model": "埋め込み模型",
       "embedding_model_tooltip": "設定->モデルサービス->管理で追加",
       "dimensions": "{{dimensions}} 次元",
       "custom_parameters": "カスタムパラメータ",
@@ -677,7 +688,8 @@
       "oauth_button": "{{provider}}で認証",
       "get_key": "取得",
       "get_key_success": "APIキーの自動取得に成功しました",
-      "login": "認証"
+      "login": "認証",
+      "error": "APIキーの自動取得に失敗しました。手動で取得してください"
     }
   }
 }

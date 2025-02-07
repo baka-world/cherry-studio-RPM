@@ -123,7 +123,7 @@ import WenxinModelLogoDark from '@renderer/assets/images/models/wenxin_dark.png'
 import YiModelLogo from '@renderer/assets/images/models/yi.png'
 import YiModelLogoDark from '@renderer/assets/images/models/yi_dark.png'
 import { getProviderByModel } from '@renderer/services/AssistantService'
-import { Model } from '@renderer/types'
+import { Assistant, Model } from '@renderer/types'
 import OpenAI from 'openai'
 
 import { getWebSearchTools } from './tools'
@@ -144,7 +144,9 @@ const visionAllowedModels = [
   'pixtral',
   'gpt-4(?:-[\\w-]+)',
   'gpt-4o(?:-[\\w-]+)?',
-  'chatgpt-4o(?:-[\\w-]+)?'
+  'chatgpt-4o(?:-[\\w-]+)?',
+  'o1(?:-[\\w-]+)?',
+  'deepseek-vl(?:[\\w-]+)?'
 ]
 
 const visionExcludedModels = ['gpt-4-\\d+-preview', 'gpt-4-turbo-preview', 'gpt-4-32k', 'gpt-4-\\d+']
@@ -155,6 +157,8 @@ export const VISION_REGEX = new RegExp(
 )
 
 export const TEXT_TO_IMAGE_REGEX = /flux|diffusion|stabilityai|sd-|dall|cogview|janus/i
+export const REASONING_REGEX = /^(o\d+(?:-[\w-]+)?|.*\breasoner\b.*|.*-[rR]\d+.*)$/i
+
 export const EMBEDDING_REGEX = /(?:^text-|embed|rerank|davinci|babbage|bge-|e5-|LLM2Vec|retrieval|uae-|gte-|jina)/i
 export const NOT_SUPPORTED_REGEX = /(?:^tts|rerank|whisper|speech)/i
 
@@ -270,56 +274,6 @@ export function getModelLogo(modelId: string) {
 }
 
 export const SYSTEM_MODELS: Record<string, Model[]> = {
-  qwenlm: [
-    {
-      id: 'qwen-plus-latest',
-      provider: 'qwenlm',
-      name: 'Qwen2.5-Plus',
-      group: 'Qwen 2.5'
-    },
-    {
-      id: 'qvq-72b-preview',
-      provider: 'qwenlm',
-      name: 'QVQ-72B-Preview',
-      group: 'QVQ'
-    },
-    {
-      id: 'qwq-32b-preview',
-      provider: 'qwenlm',
-      name: 'QwQ-32B-Preview',
-      group: 'QVQ'
-    },
-    {
-      id: 'qwen2.5-coder-32b-instruct',
-      provider: 'qwenlm',
-      name: 'Qwen2.5-Coder-32B-Instruct',
-      group: 'Qwen 2.5'
-    },
-    {
-      id: 'qwen-vl-max-latest',
-      provider: 'qwenlm',
-      name: 'Qwen2-VL-Max',
-      group: 'Qwen 2'
-    },
-    {
-      id: 'qwen-turbo-latest',
-      provider: 'qwenlm',
-      name: 'Qwen2.5-Turbo',
-      group: 'Qwen 2.5'
-    },
-    {
-      id: 'qwen2.5-72b-instruct',
-      provider: 'qwenlm',
-      name: 'Qwen2.5-72B-Instruct',
-      group: 'Qwen 2.5'
-    },
-    {
-      id: 'qwen2.5-32b-instruct',
-      provider: 'qwenlm',
-      name: 'Qwen2.5-32B-Instruct',
-      group: 'Qwen 2.5'
-    }
-  ],
   aihubmix: [
     {
       id: 'gpt-4o',
@@ -367,6 +321,12 @@ export const SYSTEM_MODELS: Record<string, Model[]> = {
       group: 'deepseek-ai'
     },
     {
+      id: 'deepseek-ai/DeepSeek-V3',
+      name: 'deepseek-ai/DeepSeek-V3',
+      provider: 'silicon',
+      group: 'deepseek-ai'
+    },
+    {
       id: 'Qwen/Qwen2.5-7B-Instruct',
       provider: 'silicon',
       name: 'Qwen2.5-7B-Instruct',
@@ -377,6 +337,12 @@ export const SYSTEM_MODELS: Record<string, Model[]> = {
       name: 'meta-llama/Llama-3.3-70B-Instruct',
       provider: 'silicon',
       group: 'meta-llama'
+    },
+    {
+      id: 'BAAI/bge-m3',
+      name: 'BAAI/bge-m3',
+      provider: 'silicon',
+      group: 'BAAI'
     }
   ],
   openai: [
@@ -1025,6 +991,56 @@ export const SYSTEM_MODELS: Record<string, Model[]> = {
       name: 'Gemma 7B',
       group: 'Gemma'
     }
+  ],
+  'baidu-cloud': [
+    {
+      id: 'deepseek-r1',
+      provider: 'baidu-cloud',
+      name: 'DeepSeek R1',
+      group: 'DeepSeek'
+    },
+    {
+      id: 'deepseek-v3',
+      provider: 'baidu-cloud',
+      name: 'DeepSeek V3',
+      group: 'DeepSeek'
+    },
+    {
+      id: 'ernie-4.0-8k-latest',
+      provider: 'baidu-cloud',
+      name: 'ERNIE-4.0',
+      group: 'ERNIE'
+    },
+    {
+      id: 'ernie-4.0-turbo-8k-latest',
+      provider: 'baidu-cloud',
+      name: 'ERNIE 4.0 Trubo',
+      group: 'ERNIE'
+    },
+    {
+      id: 'ernie-speed-8k',
+      provider: 'baidu-cloud',
+      name: 'ERNIE Speed',
+      group: 'ERNIE'
+    },
+    {
+      id: 'ernie-lite-8k',
+      provider: 'baidu-cloud',
+      name: 'ERNIE Lite',
+      group: 'ERNIE'
+    },
+    {
+      id: 'bge-large-zh',
+      provider: 'baidu-cloud',
+      name: 'BGE Large ZH',
+      group: 'Embedding'
+    },
+    {
+      id: 'bge-large-en',
+      provider: 'baidu-cloud',
+      name: 'BGE Large EN',
+      group: 'Embedding'
+    }
   ]
 }
 
@@ -1126,6 +1142,14 @@ export function isVisionModel(model: Model): boolean {
   return VISION_REGEX.test(model.id) || model.type?.includes('vision') || false
 }
 
+export function isReasoningModel(model: Model): boolean {
+  if (!model) {
+    return false
+  }
+
+  return REASONING_REGEX.test(model.id) || model.type?.includes('reasoning') || false
+}
+
 export function isSupportedModel(model: OpenAI.Models.Model): boolean {
   if (!model) {
     return false
@@ -1152,7 +1176,14 @@ export function isWebSearchModel(model: Model): boolean {
   }
 
   if (provider.id === 'gemini' || provider?.type === 'gemini') {
-    return model?.id === 'gemini-2.0-flash-exp'
+    const models = [
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-exp',
+      'gemini-2.0-flash-001',
+      'gemini-2.0-pro-exp-02-05',
+      'gemini-2.0-pro-exp'
+    ]
+    return models.includes(model?.id)
   }
 
   if (provider.id === 'hunyuan') {
@@ -1170,16 +1201,22 @@ export function isWebSearchModel(model: Model): boolean {
   return false
 }
 
-export function getOpenAIWebSearchParams(model: Model): Record<string, any> {
+export function getOpenAIWebSearchParams(assistant: Assistant, model: Model): Record<string, any> {
   if (isWebSearchModel(model)) {
-    const webSearchTools = getWebSearchTools(model)
+    if (assistant.enableWebSearch) {
+      const webSearchTools = getWebSearchTools(model)
 
-    if (model.provider === 'hunyuan') {
-      return { enable_enhancement: true }
-    }
+      if (model.provider === 'hunyuan') {
+        return { enable_enhancement: true }
+      }
 
-    return {
-      tools: webSearchTools
+      return {
+        tools: webSearchTools
+      }
+    } else {
+      if (model.provider === 'hunyuan') {
+        return { enable_enhancement: false }
+      }
     }
   }
 

@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons'
 import ModelTags from '@renderer/components/ModelTags'
 import OAuthButton from '@renderer/components/OAuth/OAuthButton'
-import { EMBEDDING_REGEX, getModelLogo, VISION_REGEX } from '@renderer/config/models'
+import { EMBEDDING_REGEX, getModelLogo, REASONING_REGEX, VISION_REGEX } from '@renderer/config/models'
 import { PROVIDER_CONFIG } from '@renderer/config/providers'
 import { useTheme } from '@renderer/context/ThemeProvider'
 import { useAssistants, useDefaultModel } from '@renderer/hooks/useAssistant'
@@ -128,13 +128,19 @@ const ProviderSetting: FC<Props> = ({ provider: _provider }) => {
     } else {
       setApiChecking(true)
 
-      const valid = await checkApi({ ...provider, apiKey, apiHost }, model)
+      const { valid, error } = await checkApi({ ...provider, apiKey, apiHost }, model)
+
+      const errorMessage = error && error?.message ? ' ' + error?.message : ''
+
       window.message[valid ? 'success' : 'error']({
         key: 'api-check',
         style: { marginTop: '3vh' },
         duration: valid ? 2 : 8,
-        content: valid ? i18n.t('message.api.connection.success') : i18n.t('message.api.connection.failed')
+        content: valid
+          ? i18n.t('message.api.connection.success')
+          : i18n.t('message.api.connection.failed') + errorMessage
       })
+
       setApiValid(valid)
       setApiChecking(false)
       setTimeout(() => setApiValid(false), 3000)
@@ -187,7 +193,8 @@ const ProviderSetting: FC<Props> = ({ provider: _provider }) => {
         onChange={(types) => onUpdateModelTypes(model, types as ModelType[])}
         options={[
           { label: t('models.type.vision'), value: 'vision', disabled: VISION_REGEX.test(model.id) },
-          { label: t('models.type.embedding'), value: 'embedding', disabled: EMBEDDING_REGEX.test(model.id) }
+          { label: t('models.type.embedding'), value: 'embedding', disabled: EMBEDDING_REGEX.test(model.id) },
+          { label: t('models.type.reasoning'), value: 'reasoning', disabled: REASONING_REGEX.test(model.id) }
         ]}
       />
     </div>
@@ -308,8 +315,10 @@ const ProviderSetting: FC<Props> = ({ provider: _provider }) => {
                 <Avatar src={getModelLogo(model.id)} size={22} style={{ marginRight: '8px' }}>
                   {model?.name?.[0]?.toUpperCase()}
                 </Avatar>
-                {model?.name}
-                <ModelTags model={model} />
+                <ModelNameRow>
+                  <span>{model?.name}</span>
+                  <ModelTags model={model} />
+                </ModelNameRow>
                 <Popover content={modelTypeContent(model)} title={t('models.type.select')} trigger="click">
                   <SettingIcon />
                 </Popover>
@@ -359,6 +368,13 @@ const ModelListHeader = styled.div`
   align-items: center;
 `
 
+const ModelNameRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+`
+
 const RemoveIcon = styled(MinusCircleOutlined)`
   font-size: 18px;
   margin-left: 10px;
@@ -368,7 +384,7 @@ const RemoveIcon = styled(MinusCircleOutlined)`
 `
 
 const SettingIcon = styled(SettingOutlined)`
-  margin-left: 10px;
+  margin-left: 2px;
   color: var(--color-text);
   cursor: pointer;
   transition: all 0.2s ease-in-out;

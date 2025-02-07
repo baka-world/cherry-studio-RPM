@@ -1,4 +1,4 @@
-import { getOpenAIWebSearchParams, isSupportedModel, isVisionModel } from '@renderer/config/models'
+import { getOpenAIWebSearchParams, isReasoningModel, isSupportedModel, isVisionModel } from '@renderer/config/models'
 import { getStoreSetting } from '@renderer/hooks/useSettings'
 import i18n from '@renderer/i18n'
 import { getAssistantSettings, getDefaultModel, getTopNamingModel } from '@renderer/services/AssistantService'
@@ -118,13 +118,7 @@ export default class OpenAIProvider extends BaseProvider {
   }
 
   private getTemperature(assistant: Assistant, model: Model) {
-    if (model.id.startsWith('o1') || model.id.startsWith('o3')) {
-      return undefined
-    }
-
-    if (model.provider === 'deepseek' && model.id === 'deepseek-reasoner') {
-      return undefined
-    }
+    if (isReasoningModel(model)) return undefined
 
     return assistant?.settings?.temperature
   }
@@ -135,6 +129,26 @@ export default class OpenAIProvider extends BaseProvider {
         return {
           include_reasoning: true
         }
+      }
+    }
+
+    return {}
+  }
+
+  private getTopP(assistant: Assistant, model: Model) {
+    if (isReasoningModel(model)) return undefined
+
+    return assistant?.settings?.topP
+  }
+
+  private getReasoningEffort(assistant: Assistant, model: Model) {
+    if (this.provider.id === 'groq') {
+      return {}
+    }
+
+    if (isReasoningModel(model)) {
+      return {
+        reasoning_effort: assistant?.settings?.reasoning_effort
       }
     }
 
@@ -165,7 +179,7 @@ export default class OpenAIProvider extends BaseProvider {
     const isOpenAIo1 = model.id.startsWith('o1')
 
     const isSupportStreamOutput = () => {
-      if (this.provider.id === 'github' && isOpenAIo1) {
+      if (isOpenAIo1) {
         return false
       }
       return streamOutput
@@ -182,11 +196,12 @@ export default class OpenAIProvider extends BaseProvider {
         Boolean
       ) as ChatCompletionMessageParam[],
       temperature: this.getTemperature(assistant, model),
-      top_p: assistant?.settings?.topP,
+      top_p: this.getTopP(assistant, model),
       max_tokens: maxTokens,
       keep_alive: this.keepAliveTime,
       stream: isSupportStreamOutput(),
-      ...(assistant.enableWebSearch ? getOpenAIWebSearchParams(model) : {}),
+      ...this.getReasoningEffort(assistant, model),
+      ...getOpenAIWebSearchParams(assistant, model),
       ...this.getProviderSpecificParameters(model),
       ...this.getCustomParameters(assistant)
     })
@@ -251,7 +266,7 @@ export default class OpenAIProvider extends BaseProvider {
       if (!onResponse) {
         return false
       }
-      if (this.provider.id === 'github' && isOpenAIo1) {
+      if (isOpenAIo1) {
         return false
       }
       return true
@@ -454,7 +469,7 @@ export default class OpenAIProvider extends BaseProvider {
   public async getEmbeddingDimensions(model: Model): Promise<number> {
     const data = await this.sdk.embeddings.create({
       model: model.id,
-      input: 'hi'
+      input: model?.provider === 'baidu-cloud' ? ['hi'] : 'hi'
     })
     return data.data[0].embedding.length
   }

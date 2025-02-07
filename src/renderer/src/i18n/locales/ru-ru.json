@@ -6,6 +6,8 @@
       "add.name.placeholder": "Введите имя",
       "add.prompt": "Промпт",
       "add.prompt.placeholder": "Введите промпт",
+      "add.knowledge_base": "База знаний",
+      "add.knowledge_base.placeholder": "Выберите базу знаний",
       "add.title": "Создать агента",
       "delete.popup.content": "Вы уверены, что хотите удалить этого агента?",
       "edit.message.add.title": "Добавить",
@@ -46,6 +48,7 @@
       "settings.model": "Настройки модели",
       "settings.preset_messages": "Предустановленные сообщения",
       "settings.prompt": "Настройки промптов",
+      "settings.knowledge_base": "Настройки базы знаний",
       "title": "Ассистенты"
     },
     "button": {
@@ -129,6 +132,7 @@
       "copy": "Копировать",
       "cut": "Вырезать",
       "default": "По умолчанию",
+      "knowledge_base": "База знаний",
       "delete": "Удалить",
       "description": "Описание",
       "docs": "Документы",
@@ -248,6 +252,9 @@
       "error.chunk_overlap_too_large": "Перекрытие фрагментов не может быть больше размера фрагмента.",
       "error.invalid.proxy.url": "Неверный URL прокси",
       "error.invalid.webdav": "Неверные настройки WebDAV",
+      "error.invalid.enter.api.host": "Пожалуйста, введите правильный API хост",
+      "error.invalid.enter.api.key": "Пожалуйста, введите правильный API ключ",
+      "error.invalid.enter.model": "Пожалуйста, выберите модель",
       "message.code_style": "Стиль кода",
       "message.delete.content": "Вы уверены, что хотите удалить это сообщение?",
       "message.delete.title": "Удалить сообщение",
@@ -311,6 +318,7 @@
       "aihubmix": "AiHubMix",
       "anthropic": "Anthropic",
       "azure-openai": "Azure OpenAI",
+      "baidu-cloud": "Baidu Cloud",
       "baichuan": "Baichuan",
       "dashscope": "Alibaba Cloud",
       "deepseek": "DeepSeek",
@@ -489,6 +497,7 @@
         "docs_check": "Проверить",
         "docs_more_details": "для получения дополнительной информации",
         "get_api_key": "Получить ключ API",
+        "charge": "Пополнить",
         "no_models": "Пожалуйста, добавьте модели перед проверкой соединения с API",
         "not_checked": "Не проверено",
         "remove_duplicate_keys": "Удалить дубликаты ключей",
@@ -637,13 +646,15 @@
         "select": "Выберите тип модели",
         "text": "Текст",
         "vision": "Изображение",
-        "embedding": "Встраиваемые"
+        "embedding": "Встраиваемые",
+        "reasoning": "Рассуждение"
       },
       "all": "Все",
-      "vision": "Визуальные модели",
-      "websearch": "Веб-поисковые модели",
-      "free": "Бесплатные модели",
-      "embedding": "Встраиваемые модели",
+      "vision": "Визуальные",
+      "websearch": "Веб-поисковые",
+      "free": "Бесплатные",
+      "reasoning": "Рассуждение",
+      "embedding": "Встраиваемые",
       "embedding_model": "Встраиваемые модели",
       "embedding_model_tooltip": "Добавьте в настройки->модель сервиса->управление",
       "dimensions": "{{dimensions}} мер",
@@ -689,7 +700,8 @@
       "oauth_button": "Авторизоваться с {{provider}}",
       "get_key": "Получить",
       "get_key_success": "Автоматический получение ключа API успешно",
-      "login": "Войти"
+      "login": "Войти",
+      "error": "Автоматический получение ключа API не удалось, пожалуйста, получите ключ вручную"
     }
   }
 }
