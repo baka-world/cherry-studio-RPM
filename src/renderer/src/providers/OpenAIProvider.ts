@@ -42,7 +42,7 @@ export default class OpenAIProvider extends BaseProvider {
   }
 
   private get isNotSupportFiles() {
-    const providers = ['deepseek', 'baichuan', 'minimax']
+    const providers = ['deepseek', 'baichuan', 'minimax', 'doubao']
     return providers.includes(this.provider.id)
   }
 
@@ -123,12 +123,21 @@ export default class OpenAIProvider extends BaseProvider {
     return assistant?.settings?.temperature
   }
 
-  private getProviderSpecificParameters(model: Model) {
+  private getProviderSpecificParameters(assistant: Assistant, model: Model) {
+    const { maxTokens } = getAssistantSettings(assistant)
+
     if (this.provider.id === 'openrouter') {
       if (model.id.includes('deepseek-r1')) {
         return {
           include_reasoning: true
         }
+      }
+    }
+
+    if (this.isOpenAIo1(model)) {
+      return {
+        max_tokens: undefined,
+        max_completion_tokens: maxTokens
       }
     }
 
@@ -155,12 +164,24 @@ export default class OpenAIProvider extends BaseProvider {
     return {}
   }
 
+  private isOpenAIo1(model: Model) {
+    return model.id.startsWith('o1')
+  }
+
   async completions({ messages, assistant, onChunk, onFilterMessages }: CompletionsParams): Promise<void> {
     const defaultModel = getDefaultModel()
     const model = assistant.model || defaultModel
     const { contextCount, maxTokens, streamOutput } = getAssistantSettings(assistant)
 
-    const systemMessage = assistant.prompt ? { role: 'system', content: assistant.prompt } : undefined
+    let systemMessage = assistant.prompt ? { role: 'system', content: assistant.prompt } : undefined
+
+    if (['o1', 'o1-2024-12-17'].includes(model.id) || model.id.startsWith('o3')) {
+      systemMessage = {
+        role: 'developer',
+        content: `Formatting re-enabled${systemMessage ? '\n' + systemMessage.content : ''}`
+      }
+    }
+
     const userMessages: ChatCompletionMessageParam[] = []
 
     const _messages = filterContextMessages(takeRight(messages, contextCount + 1))
@@ -176,7 +197,7 @@ export default class OpenAIProvider extends BaseProvider {
       userMessages.push(await this.getMessageParam(message, model))
     }
 
-    const isOpenAIo1 = model.id.startsWith('o1')
+    const isOpenAIo1 = this.isOpenAIo1(model)
 
     const isSupportStreamOutput = () => {
       if (isOpenAIo1) {
@@ -192,9 +213,7 @@ export default class OpenAIProvider extends BaseProvider {
     // @ts-ignore key is not typed
     const stream = await this.sdk.chat.completions.create({
       model: model.id,
-      messages: [isOpenAIo1 ? undefined : systemMessage, ...userMessages].filter(
-        Boolean
-      ) as ChatCompletionMessageParam[],
+      messages: [systemMessage, ...userMessages].filter(Boolean) as ChatCompletionMessageParam[],
       temperature: this.getTemperature(assistant, model),
       top_p: this.getTopP(assistant, model),
       max_tokens: maxTokens,
@@ -202,7 +221,7 @@ export default class OpenAIProvider extends BaseProvider {
       stream: isSupportStreamOutput(),
       ...this.getReasoningEffort(assistant, model),
       ...getOpenAIWebSearchParams(assistant, model),
-      ...this.getProviderSpecificParameters(model),
+      ...this.getProviderSpecificParameters(assistant, model),
       ...this.getCustomParameters(assistant)
     })
 
@@ -228,7 +247,8 @@ export default class OpenAIProvider extends BaseProvider {
         time_first_token_millsec = new Date().getTime() - start_time_millsec
       }
 
-      if (time_first_content_millsec == 0 && chunk.choices[0]?.delta?.content) {
+      //修复逻辑判断，当content为</think>时，time_first_content_millsec才会被赋值，原有代码无意义.
+      if (time_first_content_millsec == 0 && chunk.choices[0]?.delta?.content == '</think>') {
         time_first_content_millsec = new Date().getTime()
       }
 
@@ -236,6 +256,9 @@ export default class OpenAIProvider extends BaseProvider {
       const time_thinking_millsec = time_first_content_millsec ? time_first_content_millsec - start_time_millsec : 0
 
       const delta = chunk.choices[0]?.delta
+
+      // Extract citations from the raw response if available
+      const citations = (chunk as OpenAI.Chat.Completions.ChatCompletionChunk & { citations?: string[] })?.citations
 
       onChunk({
         text: delta?.content || '',
@@ -247,7 +270,8 @@ export default class OpenAIProvider extends BaseProvider {
           time_completion_millsec,
           time_first_token_millsec,
           time_thinking_millsec
-        }
+        },
+        citations
       })
     }
   }
@@ -260,7 +284,7 @@ export default class OpenAIProvider extends BaseProvider {
       { role: 'user', content: message.content }
     ]
 
-    const isOpenAIo1 = model.id.startsWith('o1')
+    const isOpenAIo1 = this.isOpenAIo1(model)
 
     const isSupportedStreamOutput = () => {
       if (!onResponse) {
@@ -331,7 +355,11 @@ export default class OpenAIProvider extends BaseProvider {
       max_tokens: 1000
     })
 
-    return removeSpecialCharacters(response.choices[0].message?.content?.substring(0, 50) || '')
+    // 针对思考类模型的返回，总结仅截取</think>之后的内容
+    let content = response.choices[0].message?.content || ''
+    content = content.replace(/^<think>(.*?)<\/think>/s, '')
+
+    return removeSpecialCharacters(content.substring(0, 50))
   }
 
   public async generateText({ prompt, content }: { prompt: string; content: string }): Promise<string> {

@@ -44,22 +44,22 @@ const initialState: LlmState = {
       enabled: false
     },
     {
-      id: 'ocoolai',
-      name: 'ocoolAI',
-      type: 'openai',
-      apiKey: '',
-      apiHost: 'https://one.ooo.cool',
-      models: SYSTEM_MODELS.ocoolai,
-      isSystem: true,
-      enabled: false
-    },
-    {
       id: 'deepseek',
       name: 'deepseek',
       type: 'openai',
       apiKey: '',
       apiHost: 'https://api.deepseek.com',
       models: SYSTEM_MODELS.deepseek,
+      isSystem: true,
+      enabled: false
+    },
+    {
+      id: 'ocoolai',
+      name: 'ocoolAI',
+      type: 'openai',
+      apiKey: '',
+      apiHost: 'https://one.ooo.cool',
+      models: SYSTEM_MODELS.ocoolai,
       isSystem: true,
       enabled: false
     },
@@ -78,7 +78,7 @@ const initialState: LlmState = {
       name: 'Ollama',
       type: 'openai',
       apiKey: '',
-      apiHost: 'http://localhost:11434/v1/',
+      apiHost: 'http://localhost:11434',
       models: SYSTEM_MODELS.ollama,
       isSystem: true,
       enabled: false
@@ -215,16 +215,6 @@ const initialState: LlmState = {
       enabled: false
     },
     {
-      id: 'graphrag-kylin-mountain',
-      name: 'GraphRAG',
-      type: 'openai',
-      apiKey: '',
-      apiHost: '',
-      models: [],
-      isSystem: true,
-      enabled: false
-    },
-    {
       id: 'openrouter',
       name: 'OpenRouter',
       type: 'openai',
@@ -331,6 +321,26 @@ const initialState: LlmState = {
       apiKey: '',
       apiHost: 'https://api.jina.ai',
       models: SYSTEM_MODELS.jina,
+      isSystem: true,
+      enabled: false
+    },
+    {
+      id: 'gitee-ai',
+      name: 'gitee ai',
+      type: 'openai',
+      apiKey: '',
+      apiHost: 'https://ai.gitee.com',
+      models: SYSTEM_MODELS['gitee-ai'],
+      isSystem: true,
+      enabled: false
+    },
+    {
+      id: 'ppio',
+      name: 'PPIO',
+      type: 'openai',
+      apiKey: '',
+      apiHost: 'https://api.ppinfra.com/v3/openai',
+      models: SYSTEM_MODELS.ppio,
       isSystem: true,
       enabled: false
     }

@@ -2,7 +2,7 @@ import i18n from '@renderer/i18n'
 import store from '@renderer/store'
 import { setGenerating } from '@renderer/store/runtime'
 import { Assistant, Message, Model, Provider, Suggestion } from '@renderer/types'
-import { formatErrorMessage } from '@renderer/utils/error'
+import { formatErrorMessage, formatMessageError } from '@renderer/utils/error'
 import { isEmpty } from 'lodash'
 
 import AiProvider from '../providers/AiProvider'
@@ -52,12 +52,13 @@ export async function fetchChatCompletion({
 
   try {
     let _messages: Message[] = []
+    let isFirstChunk = true
 
     await AI.completions({
       messages: filterUsefulMessages(messages),
       assistant,
       onFilterMessages: (messages) => (_messages = messages),
-      onChunk: ({ text, reasoning_content, usage, metrics, search }) => {
+      onChunk: ({ text, reasoning_content, usage, metrics, search, citations }) => {
         message.content = message.content + text || ''
         message.usage = usage
         message.metrics = metrics
@@ -68,6 +69,15 @@ export async function fetchChatCompletion({
 
         if (search) {
           message.metadata = { groundingMetadata: search }
+        }
+
+        // Handle citations from Perplexity API
+        if (isFirstChunk && citations) {
+          message.metadata = {
+            ...message.metadata,
+            citations
+          }
+          isFirstChunk = false
         }
 
         onResponse({ ...message, status: 'pending' })
@@ -85,6 +95,7 @@ export async function fetchChatCompletion({
   } catch (error: any) {
     message.status = 'error'
     message.content = formatErrorMessage(error)
+    message.error = formatMessageError(error)
   }
 
   timer && clearInterval(timer)
@@ -208,7 +219,7 @@ export async function checkApi(provider: Provider, model: Model) {
       window.message.error({ content: i18n.t('message.error.enter.api.key'), key, style })
       return {
         valid: false,
-        error: new Error('message.error.enter.api.key')
+        error: new Error(i18n.t('message.error.enter.api.key'))
       }
     }
   }

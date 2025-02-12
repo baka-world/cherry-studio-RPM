@@ -37,7 +37,6 @@ export type AssistantSettings = {
   streamOutput: boolean
   hideMessages: boolean
   defaultModel?: Model
-  autoResetModel: boolean
   customParameters?: AssistantSettingCustomParameters[]
   reasoning_effort?: 'low' | 'medium' | 'high'
 }
@@ -67,9 +66,12 @@ export type Message = {
   metadata?: {
     // Gemini
     groundingMetadata?: any
+    // Perplexity
+    citations?: string[]
   }
   askId?: string
   useful?: boolean
+  error?: Record<string, any>
 }
 
 export type Metrics = {
@@ -86,6 +88,7 @@ export type Topic = {
   createdAt: string
   updatedAt: string
   messages: Message[]
+  pinned?: boolean
 }
 
 export type User = {
@@ -179,6 +182,8 @@ export enum ThemeMode {
 
 export type LanguageVarious = 'zh-CN' | 'zh-TW' | 'en-US' | 'ru-RU' | 'ja-JP'
 
+export type TranslateLanguageVarious = 'chinese' | 'chinese-traditional' | 'english' | 'japanese' | 'russian'
+
 export type CodeStyleVarious = BuiltinTheme | 'auto'
 
 export type WebDavConfig = {
@@ -234,6 +239,7 @@ export interface KnowledgeBase {
   created_at: number
   updated_at: number
   version: number
+  documentCount?: number
   chunkSize?: number
   chunkOverlap?: number
 }

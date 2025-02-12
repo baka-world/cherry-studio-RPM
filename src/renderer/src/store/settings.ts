@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { TRANSLATE_PROMPT } from '@renderer/config/prompts'
-import { CodeStyleVarious, LanguageVarious, ThemeMode } from '@renderer/types'
+import { CodeStyleVarious, LanguageVarious, ThemeMode, TranslateLanguageVarious } from '@renderer/types'
 
 export type SendMessageShortcut = 'Enter' | 'Shift+Enter' | 'Ctrl+Enter' | 'Command+Enter'
 
@@ -21,6 +21,7 @@ export interface SettingsState {
   showTopics: boolean
   sendMessageShortcut: SendMessageShortcut
   language: LanguageVarious
+  targetLanguage: TranslateLanguageVarious
   proxyMode: 'system' | 'custom' | 'none'
   proxyUrl?: string
   userName: string
@@ -64,6 +65,8 @@ export interface SettingsState {
   enableQuickAssistant: boolean
   clickTrayToShowQuickAssistant: boolean
   multiModelMessageStyle: MultiModelMessageStyle
+  notionDatabaseID: string | null
+  notionApiKey: string | null
 }
 
 export type MultiModelMessageStyle = 'horizontal' | 'vertical' | 'fold'
@@ -73,6 +76,7 @@ const initialState: SettingsState = {
   showTopics: true,
   sendMessageShortcut: 'Enter',
   language: navigator.language as LanguageVarious,
+  targetLanguage: 'english' as TranslateLanguageVarious,
   proxyMode: 'system',
   proxyUrl: undefined,
   userName: '',
@@ -92,7 +96,7 @@ const initialState: SettingsState = {
   renderInputMessageAsMarkdown: false,
   codeShowLineNumbers: false,
   codeCollapsible: false,
-  mathEngine: 'MathJax',
+  mathEngine: 'KaTeX',
   messageStyle: 'plain',
   codeStyle: 'auto',
   webdavHost: '',
@@ -113,7 +117,9 @@ const initialState: SettingsState = {
   narrowMode: false,
   enableQuickAssistant: false,
   clickTrayToShowQuickAssistant: false,
-  multiModelMessageStyle: 'fold'
+  multiModelMessageStyle: 'fold',
+  notionDatabaseID: '',
+  notionApiKey: ''
 }
 
 const settingsSlice = createSlice({
@@ -138,6 +144,9 @@ const settingsSlice = createSlice({
     setLanguage: (state, action: PayloadAction<LanguageVarious>) => {
       state.language = action.payload
       window.electron.ipcRenderer.send('miniwindow-reload')
+    },
+    setTargetLanguage: (state, action: PayloadAction<TranslateLanguageVarious>) => {
+      state.targetLanguage = action.payload
     },
     setProxyMode: (state, action: PayloadAction<'system' | 'custom' | 'none'>) => {
       state.proxyMode = action.payload
@@ -258,6 +267,12 @@ const settingsSlice = createSlice({
     },
     setMultiModelMessageStyle: (state, action: PayloadAction<'horizontal' | 'vertical' | 'fold'>) => {
       state.multiModelMessageStyle = action.payload
+    },
+    setNotionDatabaseID: (state, action: PayloadAction<string>) => {
+      state.notionDatabaseID = action.payload
+    },
+    setNotionApiKey: (state, action: PayloadAction<string>) => {
+      state.notionApiKey = action.payload
     }
   }
 })
@@ -269,6 +284,7 @@ export const {
   toggleShowTopics,
   setSendMessageShortcut,
   setLanguage,
+  setTargetLanguage,
   setProxyMode,
   setProxyUrl,
   setUserName,
@@ -306,7 +322,9 @@ export const {
   setNarrowMode,
   setClickTrayToShowQuickAssistant,
   setEnableQuickAssistant,
-  setMultiModelMessageStyle
+  setMultiModelMessageStyle,
+  setNotionDatabaseID,
+  setNotionApiKey
 } = settingsSlice.actions
 
 export default settingsSlice.reducer
